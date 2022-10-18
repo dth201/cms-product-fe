@@ -1,12 +1,24 @@
 
-import { Form, Input, Button, message } from 'antd'
-import { LoginStyle } from './loginStyle';
+import { Col, Input, message, Row } from 'antd'
+import { ButtonFrame, ErrorText, FormStyle, RegisterFrame, RegisterStyle } from './loginStyle';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'antd/es/form/Form';
 import { sendPost } from 'axios/fetch';
+import { FrameIcon } from 'pages/login/loginStyle';
+import { SpaceStyle } from 'component/common/commonStyle';
+import { useState } from 'react';
+import { comparePassword } from './validate';
+import { stringify } from 'querystring';
+interface IRegisterProp {
+  email: string;
+  username: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+}
 const Register = () => {
 
-  const [form] = useForm();
+  const [values, setValues] = useState<IRegisterProp>({ email: '', username: '', phone: '', password: '', confirmPassword: '' })
+  const [errors, setErrors] = useState<{ password: string, passwordConfirm: string }>({ password: '', passwordConfirm: '' });
 
   const navigate = useNavigate();
 
@@ -23,94 +35,78 @@ const Register = () => {
   }
 
   const onFinish = () => {
-    form.validateFields();
-    const param = form.getFieldsValue();
-    handleRegister(param);
+    handleRegister(values);
   };
 
+  const updateValue = (value: any) => {
+    setValues({ ...values, ...value });
+  };
+
+  const updateError = (value: any) => {
+    setErrors({ ...errors, ...value });
+  };
 
   return (
-    <LoginStyle>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 8 }}
-        initialValues={{ remember: true }}
-        autoComplete="off"
-        form={form}
-      >
+    <RegisterStyle>
+      <RegisterFrame>
+        <ButtonFrame>
+          <div></div>
+          <button className='toggle-btn' onClick={() => navigate('/login')}>Đăng nhập</button>
+          <button className='toggle-btn'>Đăng ký</button>
+        </ButtonFrame>
 
-        <Form.Item
-          label="Họ và tên"
-          name="username"
-          rules={[{ required: true, message: 'Không được bỏ trống!' }]}
-        >
-          <Input />
-        </Form.Item>
+        <FrameIcon>
+          <img src="https://librarymnguet.herokuapp.com/images/fb.png" alt="" />
+          <img src="https://librarymnguet.herokuapp.com/images/tw.png" alt="" />
+          <img src="https://librarymnguet.herokuapp.com/images/gp.png" alt="" />
+        </FrameIcon>
 
-        <Form.Item
-          label="Số điện thoại"
-          name="phone"
-          rules={[{ required: true, message: 'Không được bỏ trống!' }]}
-        >
-          <Input />
-        </Form.Item>
+        <SpaceStyle padding="10px" />
 
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: 'Không được bỏ trống!' }]}
-        >
-          <Input />
-        </Form.Item>
+        <FormStyle>
+          <Row gutter={[20, 20]}>
+            <Col span={12}>
+              <Input onChange={(e: any) => updateValue({ username: e?.target?.value })} value={values.username} placeholder='Họ và tên' />
+            </Col>
 
-        <Form.Item
-          label="Mật khẩu"
-          name="password"
-          rules={[{ required: true, message: 'Không được bỏ trống!' },
-          ({ getFieldValue }) => ({
+            <Col span={12}>
+              <Input onChange={(e: any) => {
+                const error = comparePassword(e?.target?.value, values.confirmPassword);
+                updateValue({ password: e?.target?.value })
+                updateError({ password: error, confirmPassword: error });
 
+              }} value={values.password} type='password' placeholder='Password' />
+              {errors.password.length > 0 && <ErrorText>{errors.password}</ErrorText>}
+            </Col>
 
-            validator(_, value) {
-              if (getFieldValue('confirmPassword') === value) {
-                form.setFields([{ name: 'confirmPassword', errors: undefined }])
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('Mật khẩu không trùng nhau!'));
-            },
-          }),
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
+            <Col span={12}>
+              <Input onChange={(e: any) => updateValue({ phone: e?.target?.value })} value={values.phone} placeholder='Số điện thoại' />
+            </Col>
+            <Col span={12}>
+              <Input onChange={(e: any) => {
+                const error = comparePassword(values.password, e?.target?.value);
+                updateValue({ confirmPassword: e?.target?.value })
+                updateError({ confirmPassword: error, password: error });
 
-        <Form.Item
-          label="Nhập lại mật khẩu"
-          name="confirmPassword"
-          rules={[{ required: true, message: 'Không được bỏ trống!' },
-          ({ getFieldValue }) => ({
+              }} value={values.confirmPassword} type='password' placeholder='ConfirmPassword' />
+              {errors.password.length > 0 && <ErrorText>{errors.password}</ErrorText>}
+            </Col>
 
+            <Col span={12}>
+              <Input onChange={(e: any) => updateValue({ email: e?.target?.value })} value={values.email} placeholder='Email' />
+            </Col>
 
-            validator(_, value) {
-              if (getFieldValue('password') === value) {
-                form.setFields([{ name: 'password', errors: undefined }])
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('Mật khẩu không trùng nhau!'));
-            },
-          }),
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
+            <SpaceStyle padding="10px" />
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" onClick={onFinish}>
-            Đăng ký
-          </Button>
-        </Form.Item>
-      </Form>
-    </LoginStyle>
+            <Col span={24}>
+              <button onClick={onFinish}>Đăng ký</button>
+            </Col>
+
+          </Row>
+        </FormStyle>
+
+      </RegisterFrame>
+    </RegisterStyle>
 
   );
 }
