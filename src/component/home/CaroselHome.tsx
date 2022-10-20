@@ -2,15 +2,6 @@ import { Carousel } from "antd";
 import { ImageBg } from "./commonStyle";
 
 
-const contentStyle: React.CSSProperties = {
-  height: '240px',
-  width: '860px',
-  color: '#fff',
-  lineHeight: '240px',
-  textAlign: 'center',
-  background: '#364d79',
-};
-
 const CaroselHome = () => {
 
   return (
