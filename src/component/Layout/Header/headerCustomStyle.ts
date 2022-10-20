@@ -51,9 +51,21 @@ button {
 }
 `;
 
+const FrameCreate = styled.div`
+border: 1px solid rgb(20, 168, 0);
+padding: 3px 10px;
+height: 42px;
+border-radius: 5px;
+color: rgb(20, 168, 0);
+display: flex;
+    align-items: center;
+    width: 137px;
+`;
+
 export {
   HeaderCustomStyle,
   DropDownStyle,
   InfoStyle,
-  SearchButtonStyle
+  SearchButtonStyle,
+  FrameCreate
 }

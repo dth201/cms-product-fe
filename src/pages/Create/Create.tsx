@@ -1,20 +1,21 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, message, Select, Upload } from "antd";
+import { Button, Col, Form, Input, InputNumber, message, Row, Select, Upload } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { sendGet, sendPost, sendPostFile } from "axios/fetch";
 import { SpaceStyle, TextStyle } from "component/common/commonStyle";
 import ContentCustom from "component/Content/Content";
-import { CreateProductStyle } from "./createStyle";
+import { ButtonCreate, CreateProductStyle } from "./createStyle";
 import { useState, useEffect } from 'react';
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
 const { TextArea } = Input;
 
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 14 },
+  labelCol: { span: 12 },
+  wrapperCol: { span: 23 },
 };
 
 interface ISubcategoriesData {
@@ -32,6 +33,8 @@ const CreateProduct = () => {
   const [subcategories, setSubcategories] = useState<ISubcategoriesData[]>([]);
   const { userInfo } = useSelector((state: any) => state?.auth);
 
+  const navigate = useNavigate();
+
 
   const onFinish = () => {
     const body = form.getFieldsValue();
@@ -42,7 +45,8 @@ const CreateProduct = () => {
     try {
       await sendPost('products', { ...body, userId: userInfo?.id });
       form.resetFields();
-      message.success('Tạo sản phẩm thành công!')
+      message.success('Tạo sản phẩm thành công!');
+      navigate('/home');
     } catch (err) {
       message.error('Lỗi hệ thống')
     }
@@ -50,9 +54,6 @@ const CreateProduct = () => {
 
   const getSubcategories = async () => {
     const result = await sendGet('categories');
-
-    console.log(result?.data, '123123');
-
     if (result?.data) {
       setSubcategories(result?.data);
     }
@@ -83,83 +84,97 @@ const CreateProduct = () => {
   return (
     <ContentCustom>
       <SpaceStyle padding="20px" />
-      <TextStyle color="black" fontSize="2em" fontWeight="500">Tạo sản phẩm</TextStyle>
+      <TextStyle color="black" fontSize="2.2em" fontWeight="500">Đăng sản phẩm</TextStyle>
       <SpaceStyle padding="20px" />
       <CreateProductStyle>
         <Form
           name="validate_other"
           {...formItemLayout}
+          layout={'vertical'}
           form={form}
         >
 
-          <Form.Item
-            name="name"
-            label="Tên sản phẩm"
-            rules={[{ required: true, message: 'Trường này không được bỏ trống!' }]}
-          >
-            <Input placeholder="Nhập tên sản phẩm" />
-          </Form.Item>
+          <Row>
+            <Col span={12}>
+              <Form.Item
+                name="name"
+                label="Tên sản phẩm"
+                rules={[{ required: true, message: 'Trường này không được bỏ trống!' }]}
+              >
+                <Input placeholder="Nhập tên sản phẩm" />
+              </Form.Item>
+            </Col>
 
-          <Form.Item
-            name="timeComplete"
-            label="Số ngày cần hoàn thành"
-            rules={[{ required: true, message: 'Nhập thời gian cần hoàn thành!' }]}
-          >
-            <InputNumber width={'100%'} placeholder="Nhập thời gian cần hoàn thành" />
-          </Form.Item>
+            <Col span={12}>
+              <Form.Item
+                name="timeComplete"
+                label="Số ngày cần hoàn thành"
+                rules={[{ required: true, message: 'Nhập thời gian cần hoàn thành!' }]}
+              >
+                <InputNumber width={'100%'} placeholder="Nhập thời gian cần hoàn thành" />
+              </Form.Item>
+            </Col>
 
-
-          <Form.Item
-            name="priceStart"
-            label="Giá tối thiểu"
-            rules={[
-              { required: true, message: 'Trường này không được bỏ trống!' },
-              ({ getFieldValue }) => ({
-
-
-                validator(_, value) {
-                  if (getFieldValue('priceEnd') > value) {
-                    form.setFields([{ name: 'priceEnd', errors: undefined }])
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error('Giá tiền tối thiểu phải nhỏ hơn giá tiền tối đa!'));
-                },
-              }),
-            ]}
-          >
-            <InputNumber width={'100%'} placeholder="Nhập giá tối thiểu" />
-          </Form.Item>
-
-          <Form.Item
-            name="priceEnd"
-            label="Giá tối đa"
-            rules={[{ required: true, message: 'Trường này không được bỏ trống!' },
-            ({ getFieldValue }) => ({
+            <Col span={12}>
+              <Form.Item
+                name="priceStart"
+                label="Giá tối thiểu"
+                rules={[
+                  { required: true, message: 'Trường này không được bỏ trống!' },
+                  ({ getFieldValue }) => ({
 
 
-              validator(_, value) {
-                if (getFieldValue('priceStart') < value) {
-                  form.setFields([{ name: 'priceStart', errors: undefined }])
-                  return Promise.resolve();
-                }
-                return Promise.reject(new Error('Giá tiền tối thiểu phải nhỏ hơn giá tiền tối đa!'));
-              },
-            }),
-            ]}
-          >
-            <InputNumber width={'100%'} placeholder="Nhập giá tối đa" />
-          </Form.Item>
+                    validator(_, value) {
+                      if (getFieldValue('priceEnd') > value) {
+                        form.setFields([{ name: 'priceEnd', errors: undefined }])
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('Giá tiền tối thiểu phải nhỏ hơn giá tiền tối đa!'));
+                    },
+                  }),
+                ]}
+              >
+                <InputNumber width={'100%'} placeholder="Nhập giá tối thiểu" />
+              </Form.Item>
+            </Col>
 
-          <Form.Item
-            name="categoryId"
-            label="Thể loại sản phẩm"
-            hasFeedback
-            rules={[{ required: true, message: 'Trường này không được bỏ trống!' }]}
-          >
-            <Select placeholder="Chọn thể loại sản phẩm" showSearch onChange={(_value: any, option: any) => form.setFieldValue('categoryId', option?.key)}>
-              {subcategories?.map((item: ISubcategoriesData) => (<Option key={item?.id} value={item?.id}>{item?.name}</Option>))}
-            </Select>
-          </Form.Item>
+            <Col span={12}>
+              <Form.Item
+                name="priceEnd"
+                label="Giá tối đa"
+                rules={[{ required: true, message: 'Trường này không được bỏ trống!' },
+                ({ getFieldValue }) => ({
+
+
+                  validator(_, value) {
+                    if (getFieldValue('priceStart') < value) {
+                      form.setFields([{ name: 'priceStart', errors: undefined }])
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Giá tiền tối thiểu phải nhỏ hơn giá tiền tối đa!'));
+                  },
+                }),
+                ]}
+              >
+                <InputNumber width={'100%'} placeholder="Nhập giá tối đa" />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item
+                name="categoryId"
+                label="Thể loại sản phẩm"
+                hasFeedback
+                rules={[{ required: true, message: 'Trường này không được bỏ trống!' }]}
+              >
+                <Select placeholder="Chọn thể loại sản phẩm" showSearch onChange={(_value: any, option: any) => form.setFieldValue('categoryId', option?.key)}>
+                  {subcategories?.map((item: ISubcategoriesData) => (<Option key={item?.id} value={item?.id}>{item?.name}</Option>))}
+                </Select>
+              </Form.Item>
+            </Col>
+
+          </Row>
+
 
           <Form.Item
             name="description"
@@ -181,17 +196,17 @@ const CreateProduct = () => {
 
           <Form.Item
             name="upload"
-            label="Upload"
+            label="Đăng ảnh sản phẩm"
           >
             <Upload customRequest={(info: any) => uploadFile(info)}>
-              <Button icon={<UploadOutlined />}>Upload ảnh</Button>
+              <Button icon={<UploadOutlined />}>Upload</Button>
             </Upload>
           </Form.Item>
 
-          <Form.Item wrapperCol={{ span: 12, offset: 5 }}>
-            <Button type="primary" onClick={onFinish}>
+          <Form.Item wrapperCol={{ span: 12, offset: 0 }}>
+            <ButtonCreate type="primary" onClick={onFinish}>
               Đăng sản phẩm
-            </Button>
+            </ButtonCreate>
           </Form.Item>
         </Form>
       </CreateProductStyle>
