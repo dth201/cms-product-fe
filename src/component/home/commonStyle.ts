@@ -1,4 +1,4 @@
-import { Checkbox } from "antd";
+import { Checkbox, Select } from "antd";
 import styled from "styled-components";
 
 const GroupSearchStyle = styled.div`
@@ -50,6 +50,8 @@ background-color: rgba(0, 0, 0, 0.04);
 border-radius: 3px;
 display: flex;
 align-items: center;
+border-radius: 5px;
+border: 1px solid #d2c8c8;
 `;
 
 
@@ -95,6 +97,20 @@ display: flex;
 align-items: baseline;
 `;
 
+const SelectFilter = styled(Select)`
+.ant-select-selector {
+  border-radius: 5px;
+}
+`;
+
+const ImageBg = styled.img<any>`
+width: 100%;
+height: 240px;
+object-fit: cover;
+object-position: ${(props) => props?.position || 'top'};
+border-radius: 5px;
+`
+
 
 
 export {
@@ -107,5 +123,7 @@ export {
   ProductInfoStyle,
   PriceCategoryBox,
   PriceText,
-  BoxStyle
+  BoxStyle,
+  SelectFilter,
+  ImageBg
 }
