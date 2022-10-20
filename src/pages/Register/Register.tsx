@@ -7,7 +7,6 @@ import { FrameIcon } from 'pages/login/loginStyle';
 import { SpaceStyle } from 'component/common/commonStyle';
 import { useState } from 'react';
 import { comparePassword } from './validate';
-import { stringify } from 'querystring';
 interface IRegisterProp {
   email: string;
   username: string;
