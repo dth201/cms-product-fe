@@ -1,9 +1,17 @@
+import { Tabs } from "antd";
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 
 const SidebarStyle = styled.div`
 
 
+`;
+
+const CategoryTab = styled(Tabs)`
+.ant-tabs-nav {
+  padding: 0 calc(50vw - 570px);
+  height: 41px;
+}
 `;
 
 const HeaderSideBarStyle = styled.div`
@@ -76,5 +84,6 @@ export {
   SearchButtonStyle,
   ProductContentStyle,
   ProductStyle,
-  PaginationStyle
+  PaginationStyle,
+  CategoryTab
 }

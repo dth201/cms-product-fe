@@ -1,7 +1,7 @@
 import { Avatar, Menu } from "antd";
 import { SpaceStyle, TextStyle } from "component/common/commonStyle";
 import { useNavigate } from "react-router-dom";
-import { DropDownStyle, HeaderCustomStyle, InfoStyle } from "./headerCustomStyle";
+import { DropDownStyle, HeaderCustomStyle, InfoStyle, SearchButtonStyle } from "./headerCustomStyle";
 import { useEffect } from 'react';
 import { sendGet } from "axios/fetch";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,15 +54,23 @@ const HeaderCustom = () => {
 
   return (
     <HeaderCustomStyle>
-      <TextStyle onClick={() => navigate('/home')} style={{ cursor: 'pointer' }} fontWeight="600">CMS Product</TextStyle>
-      <TextStyle onClick={() => navigate('/create')} hoverCursor="pointer" margin="0 0 0 auto">Tạo sản phẩm</TextStyle>
+
+      <TextStyle color="black" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }} fontWeight="600">CMS Product</TextStyle>
+
+      <SpaceStyle padding="16px" />
+
+      <SearchButtonStyle placeholder="Nhập tên sản phẩm..." />
+
+      <SpaceStyle padding="16px" />
+
+      <TextStyle color="black" onClick={() => navigate('/create')} hoverCursor="pointer" margin="0 0 0 auto">Tạo sản phẩm</TextStyle>
 
       <SpaceStyle padding="5px" />
       <DropDownStyle overlay={menu}>
 
         <InfoStyle>
           <Avatar src="https://joeschmoe.io/api/v1/random" />
-          <TextStyle>{userInfo?.username}</TextStyle>
+          {/* <TextStyle>{userInfo?.username}</TextStyle> */}
         </InfoStyle>
 
       </DropDownStyle>

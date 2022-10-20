@@ -1,12 +1,13 @@
 import { SpaceStyle } from "component/common/commonStyle";
 import ContentCustom from "component/Content/Content";
 import Sidebar from "./SideBar";
-import { ContentPageStyle, PaginationStyle, ProductContentStyle, ProductStyle, SearchButtonStyle } from "./commonStyle";
+import { CategoryTab, ContentPageStyle, PaginationStyle, ProductContentStyle, ProductStyle } from "./commonStyle";
 import FilterHome from "component/home/Filter";
 import ProductItem from "component/home/ProductItem";
 import { Pagination } from "antd";
 import { sendGet } from "axios/fetch";
 import { useEffect, useState, useRef } from "react";
+import CaroselHome from "component/home/CaroselHome";
 
 enum ESortBy {
   HIGHT_TO_LOW = 1,
@@ -30,6 +31,12 @@ export enum EStatusProduct {
   OPEN = 1,
   INPROGRESS,
   RESOLVE,
+}
+
+interface ICategoriesData {
+  id: string;
+  name: string;
+  created_at?: string;
 }
 
 export interface IProductData {
@@ -75,7 +82,26 @@ const HomePage = () => {
 
   const [products, setProducts] = useState<IProductData[]>([]);
 
-  const totalRecord = useRef<number>(0)
+  const totalRecord = useRef<number>(0);
+
+  const [tabs, setTabs] = useState<{ label: string, key: string }[]>([{
+    label: `Tất cả`,
+    key: '0',
+  }]);
+
+  const getListCategory = async () => {
+    const result = await sendGet('categories');
+
+    if (result?.data) {
+      const categoriesTab = result?.data?.map((item: ICategoriesData) => ({ label: item.name, key: item.id }));
+      setTabs([...tabs, ...categoriesTab]);
+    }
+  }
+
+  useEffect(() => {
+    getListCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getProducts = async () => {
     const result = await sendGet('products', params);
@@ -95,19 +121,14 @@ const HomePage = () => {
   };
 
 
-
   return (
     <>
-      <SpaceStyle padding="20px" />
-      <ContentCustom spaceContentStyle={{ order: -1 }} sideBarStyle={{ order: -2 }} sibar={<Sidebar onSetCategorySelected={(value: any[]) => {
-
-        updateParam({ categoryId: value?.join(',') })
-      }} />}>
+      <CategoryTab defaultActiveKey="-2" items={tabs}></CategoryTab>
+      <ContentCustom spaceContentStyle={{ order: -1 }} sideBarStyle={{ order: -2 }} >
         <ContentPageStyle>
-          <SearchButtonStyle onChange={(e: any) => {
-            const value = e?.target?.value as string;
-            updateParam({ name: value });
-          }} placeholder="Nhập tên sản phẩm..." />
+
+          <CaroselHome />
+
 
           <SpaceStyle padding=" 10px" />
           <FilterHome defaultValue={ESortType.NEW} option={option} onChangeCategory={updateParam} />
