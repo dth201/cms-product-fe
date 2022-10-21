@@ -45,6 +45,7 @@ display: flex;
 align-items: ${(props) => props?.alignItem || 'center'};
 justify-content: ${(props) => props?.justifyContent || 'unset'};
 width: ${(props) => props?.width || 'unset'};
+flex-direction: ${(props) => props?.flexDirection || 'unset'};
 `
 
 export { TextStyle, IconStyle, SpaceStyle, DividerStyle, FlexBox }

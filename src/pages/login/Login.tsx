@@ -1,17 +1,19 @@
 
-import React from 'react';
-import { Form, Input, Button } from 'antd'
-import { LoginStyle } from './loginStyle';
+import { Input, Button } from 'antd'
+import { ButtonFrame, ButtonSubmit, FormStyle, FrameIcon, LoginFrame, LoginStyle } from './loginStyle';
 import { useDispatch } from 'react-redux';
 import { storeSetIsLogin } from 'store/auth';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'antd/es/form/Form';
 import { sendPost } from 'axios/fetch';
-import { TextStyle } from 'component/common/commonStyle';
+import { SpaceStyle } from 'component/common/commonStyle';
+import { useState } from 'react';
+
+interface ILoginData {
+  email: string;
+  password: string;
+}
 const Login = () => {
-
-  const [form] = useForm();
-
+  const [values, setValues] = useState<ILoginData>({ email: '', password: '' });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,51 +27,45 @@ const Login = () => {
   }
 
   const onFinish = () => {
-    const param = form.getFieldsValue();
-    handleLogin(param);
+    handleLogin(values);
   };
 
 
+
+  const updateValue = (value: any) => {
+    setValues({ ...values, ...value });
+  }
+
   return (
     <LoginStyle>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 8 }}
-        initialValues={{ remember: true }}
-        autoComplete="off"
-        form={form}
-      >
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
-          <Input />
-        </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <Input.Password />
-        </Form.Item>
+      <LoginFrame>
+        <ButtonFrame>
+          <div></div>
+          <Button className='toggle-btn'>Đăng nhập</Button>
+          <Button className='toggle-btn' onClick={() => navigate('/register')}>Đăng ký</Button>
+        </ButtonFrame>
 
-        <Form.Item
-          label="Email"
-          className="no-account"
-        >
-          <TextStyle onClick={() => navigate('/register')} textAlign="end" color="#08f" hoverTextDecoration="underline" hoverCursor="pointer">Chưa có tài khoản?</TextStyle>
-        </Form.Item>
+        <FrameIcon>
+          <img src="https://librarymnguet.herokuapp.com/images/fb.png" alt="" />
+          <img src="https://librarymnguet.herokuapp.com/images/tw.png" alt="" />
+          <img src="https://librarymnguet.herokuapp.com/images/gp.png" alt="" />
+        </FrameIcon>
 
+        <SpaceStyle padding="15px" />
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" onClick={onFinish}>
-            Đăng nhập
-          </Button>
-        </Form.Item>
-      </Form>
+        <FormStyle style={{ padding: '0 40px' }} flexDirection="column">
+          <Input value={values?.email} onChange={(e: any) => updateValue({ email: e?.target?.value })} placeholder='Email' />
+
+          <SpaceStyle padding="15px" />
+
+          <Input onChange={(e: any) => updateValue({ password: e?.target?.value })} value={values?.password} placeholder='Mật khẩu' type='password' />
+
+          <SpaceStyle padding="15px" />
+
+          <ButtonSubmit onClick={onFinish}>Đăng nhập</ButtonSubmit>
+        </FormStyle>
+      </LoginFrame>
     </LoginStyle>
 
   );

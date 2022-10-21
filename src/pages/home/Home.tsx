@@ -1,6 +1,5 @@
 import { SpaceStyle } from "component/common/commonStyle";
 import ContentCustom from "component/Content/Content";
-import Sidebar from "./SideBar";
 import { CategoryTab, ContentPageStyle, CreateProduct, FrameCreateProduct, PaginationStyle, ProductContentStyle, ProductMain, ProductStyle } from "./commonStyle";
 import FilterHome from "component/home/Filter";
 import ProductItem from "component/home/ProductItem";
